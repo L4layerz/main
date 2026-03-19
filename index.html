@@ -4,132 +4,139 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>L4layerz</title>
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/brands.css">
-    
     <style>
-        /* 리퀴드 글래스 배경 */
+        /* 기본 배경 및 폰트 */
         body {
+            background: #000;
+            color: white;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* 진입 전까지 스크롤 방지 */
+        }
+
+        /* 1. 진입 오버레이 (펑크 효과) */
+        #overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: #000;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            overflow-x: hidden;
+            z-index: 999;
+            cursor: pointer;
+            transition: opacity 0.8s ease, visibility 0.8s;
         }
+        #overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .enter-text {
+            font-size: 14px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            animation: blink 1s infinite;
+            color: #fff;
+            text-shadow: 2px 0 #ff003c, -2px 0 #00e5ff; /* 펑크한 글리치 느낌 */
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
+        /* 2. 메인 컨테이너 */
         .container {
-            backdrop-filter: blur(15px);
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 30px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 1s ease-out;
+        }
+        .container.show {
+            opacity: 1;
+            transform: scale(1);
         }
 
-        /* 스포티파이 스타일 위젯 */
+        /* 프로필 및 위젯 스타일 */
+        .avatar { width: 90px; height: 90px; border-radius: 50%; margin-bottom: 10px; border: 1px solid #333; }
         .spotify-widget {
-            margin-top: 30px;
-            background: #181818;
+            background: #121212;
+            width: 100%;
+            max-width: 350px;
             border-radius: 12px;
             padding: 12px;
             display: flex;
             align-items: center;
-            gap: 15px;
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.2s;
+            gap: 12px;
+            margin: 20px 0;
+            border: 1px solid #282828;
+            text-align: left;
         }
-        .spotify-widget:hover { transform: translateY(-3px); }
-        
-        .album-art {
-            width: 50px;
-            height: 50px;
-            border-radius: 4px;
-            background: #333; /* 이미지 없을 때 대비 */
-        }
+        .album-art { width: 45px; height: 45px; border-radius: 4px; }
+        .song-info { flex: 1; }
+        .song-title { font-size: 13px; font-weight: bold; margin: 0; }
+        .artist-name { color: #b3b3b3; font-size: 11px; margin: 0; }
 
-        .song-info { flex: 1; overflow: hidden; }
-        .song-title { color: #fff; font-size: 14px; font-weight: bold; margin-bottom: 2px; }
-        .artist-name { color: #b3b3b3; font-size: 12px; }
-
-        .progress-container {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 0 0 12px 12px;
+        /* 버튼 스타일 */
+        .button-stack { width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 10px; }
+        .button {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.3s;
+            text-align: center;
         }
-        .progress-bar {
-            width: 65%; /* 재생 진행도 */
-            height: 100%;
-            background: #1DB954; /* 스포티파이 그린 */
-            border-radius: 0 0 0 12px;
-        }
-
-        .spotify-icon {
-            width: 20px;
-            filter: invert(1);
-            opacity: 0.7;
-        }
+        .button:hover { background: rgba(255,255,255,0.1); border-color: white; }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="column">
-            <img class="avatar avatar--rounded" src="images/avatar.png" alt="L4layerz">
-            <h1><div>L4layerz</div></h1>
-            <p>Korean</p>
 
-            <div class="button-stack">
-                <a class="button button-discord" href="https://discord.gg/RfhzMmKphJ" target="_blank" rel="noopener">
-                    <img class="icon" src="images/icons/discord.svg" alt="Discord">Discord Server
-                </a>
-                </div>
+    <div id="overlay" onclick="enterSite()">
+        <div class="enter-text">[ CLICK TO ENTER ]</div>
+    </div>
 
-            <div class="spotify-widget" onclick="togglePlay()">
-                <img class="album-art" src="https://i.scdn.co/image/ab67616d0000b27376037e296e8d15024b89eb06" alt="Art">
-                <div class="song-info">
-                    <div class="song-title">Song Title Name</div>
-                    <div class="artist-name">Artist Name</div>
-                </div>
-                <img class="spotify-icon" src="images/icons/spotify-alt.svg" alt="Spotify">
-                <div class="progress-container">
-                    <div class="progress-bar" id="pBar"></div>
-                </div>
+    <div class="container" id="main-content">
+        <img class="avatar" src="images/avatar.png" alt="L4layerz">
+        <h1 style="margin:0; font-size: 22px;">L4layerz</h1>
+        <p style="color: #666; font-size: 12px; margin: 5px 0 0 0;">Korean</p>
+
+        <div class="spotify-widget">
+            <img class="album-art" src="https://i.scdn.co/image/ab67616d0000b27376037e296e8d15024b89eb06" alt="Art">
+            <div class="song-info">
+                <p class="song-title">Perfect Night</p>
+                <p class="artist-name">LE SSERAFIM</p>
             </div>
+            <div style="color: #1DB954; font-size: 18px;">🎧</div>
+        </div>
 
-            <audio id="myAudio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
-
-            <footer>
-                <p>© 2026 L4layerz</p>
-            </footer>
+        <div class="button-stack">
+            <a href="https://discord.gg/RfhzMmKphJ" target="_blank" class="button">Discord Server</a>
+            <a href="#" target="_blank" class="button">YouTube</a>
+            <a href="#" target="_blank" class="button">Instagram</a>
         </div>
     </div>
 
+    <audio id="bgm" src="여기에_음악주소.mp3" loop></audio>
+
     <script>
-        const audio = document.getElementById("myAudio");
-        const pBar = document.getElementById("pBar");
-
-        function togglePlay() {
-            if (audio.paused) {
-                audio.play();
-            } else {
-                audio.pause();
-            }
+        function enterSite() {
+            // 오버레이 숨기기
+            document.getElementById('overlay').classList.add('hidden');
+            // 콘텐츠 보이기
+            document.getElementById('main-content').classList.add('show');
+            // 배경 음악 재생 (선택사항)
+            const audio = document.getElementById('bgm');
+            if(audio.src) audio.play();
+            // 스크롤 허용
+            document.body.style.overflow = 'auto';
         }
-
-        // 재생바 움직이는 효과 (보이는 것만)
-        audio.ontimeupdate = function() {
-            let percentage = (audio.currentTime / audio.duration) * 100;
-            pBar.style.width = percentage + "%";
-        };
     </script>
+
 </body>
 </html>
