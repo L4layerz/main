@@ -5,16 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>L4layerz</title>
     <style>
-        /* 기본 배경 및 폰트 */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
         body {
             background: #000;
             color: white;
             margin: 0;
             font-family: 'Inter', sans-serif;
-            overflow: hidden; /* 진입 전까지 스크롤 방지 */
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
 
-        /* 1. 진입 오버레이 (펑크 효과) */
+        /* 1. 진입 오버레이 (글리치 효과) */
         #overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -24,116 +29,133 @@
             justify-content: center;
             z-index: 999;
             cursor: pointer;
-            transition: opacity 0.8s ease, visibility 0.8s;
+            transition: opacity 0.5s ease;
         }
-        #overlay.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
+        #overlay.hidden { opacity: 0; visibility: hidden; }
+
         .enter-text {
-            font-size: 14px;
-            letter-spacing: 5px;
+            font-size: 16px;
+            letter-spacing: 4px;
             text-transform: uppercase;
-            animation: blink 1s infinite;
+            font-weight: bold;
             color: #fff;
-            text-shadow: 2px 0 #ff003c, -2px 0 #00e5ff; /* 펑크한 글리치 느낌 */
+            text-shadow: 2px 0 #ff003c, -2px 0 #00e5ff;
+            animation: blink 0.8s infinite;
         }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
 
         /* 2. 메인 컨테이너 */
         .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
+            width: 90%;
+            max-width: 360px;
+            text-align: center;
             opacity: 0;
-            transform: scale(0.9);
-            transition: all 1s ease-out;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-        .container.show {
-            opacity: 1;
-            transform: scale(1);
+        .container.show { opacity: 1; transform: translateY(0); }
+
+        .avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            pointer-events: none;
         }
 
-        /* 프로필 및 위젯 스타일 */
-        .avatar { width: 90px; height: 90px; border-radius: 50%; margin-bottom: 10px; border: 1px solid #333; }
+        h1 { font-size: 26px; margin: 0; letter-spacing: -1px; }
+        .bio-text { color: #666; font-size: 14px; margin-top: 5px; margin-bottom: 30px; }
+
+        /* 스포티파이 위젯 디자인 */
         .spotify-widget {
             background: #121212;
-            width: 100%;
-            max-width: 350px;
-            border-radius: 12px;
-            padding: 12px;
+            border-radius: 14px;
+            padding: 14px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin: 20px 0;
-            border: 1px solid #282828;
+            gap: 14px;
+            margin-bottom: 12px;
+            border: 1px solid #222;
             text-align: left;
+            transition: 0.3s;
         }
-        .album-art { width: 45px; height: 45px; border-radius: 4px; }
+        .spotify-widget:hover { border-color: #1DB954; }
+        .album-art { width: 48px; height: 48px; border-radius: 6px; }
         .song-info { flex: 1; }
-        .song-title { font-size: 13px; font-weight: bold; margin: 0; }
+        .song-title { color: #fff; font-size: 14px; font-weight: 700; margin: 0; }
         .artist-name { color: #b3b3b3; font-size: 11px; margin: 0; }
+        .spot-icon { width: 20px; filter: invert(47%) sepia(87%) saturate(445%) hue-rotate(92deg) brightness(96%) contrast(89%); }
 
         /* 버튼 스타일 */
-        .button-stack { width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 10px; }
+        .button-stack { display: flex; flex-direction: column; gap: 10px; }
         .button {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             color: white;
-            padding: 14px;
-            border-radius: 8px;
+            padding: 15px;
+            border-radius: 12px;
             text-decoration: none;
             font-size: 14px;
-            font-weight: 500;
-            transition: 0.3s;
-            text-align: center;
+            font-weight: 600;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
-        .button:hover { background: rgba(255,255,255,0.1); border-color: white; }
+        .button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .icon { width: 18px; filter: invert(1); }
     </style>
 </head>
 
 <body>
 
     <div id="overlay" onclick="enterSite()">
-        <div class="enter-text">[ CLICK TO ENTER ]</div>
+        <div class="enter-text">L 4 L A Y E R Z</div>
     </div>
 
     <div class="container" id="main-content">
-        <img class="avatar" src="images/avatar.png" alt="L4layerz">
-        <h1 style="margin:0; font-size: 22px;">L4layerz</h1>
-        <p style="color: #666; font-size: 12px; margin: 5px 0 0 0;">Korean</p>
+        <img class="avatar" src="images/avatar.png" alt="Profile">
+        <h1>L4layerz</h1>
+        <p class="bio-text">Korean</p>
 
         <div class="spotify-widget">
-            <img class="album-art" src="https://i.scdn.co/image/ab67616d0000b27376037e296e8d15024b89eb06" alt="Art">
+            <img class="album-art" src="https://i.scdn.co/image/ab67616d0000b27376037e296e8d15024b89eb06" alt="Album Art">
             <div class="song-info">
                 <p class="song-title">Perfect Night</p>
                 <p class="artist-name">LE SSERAFIM</p>
             </div>
-            <div style="color: #1DB954; font-size: 18px;">🎧</div>
+            <img src="https://cdn-icons-png.flaticon.com/512/174/174872.png" class="spot-icon" alt="Spotify">
         </div>
 
         <div class="button-stack">
-            <a href="https://discord.gg/RfhzMmKphJ" target="_blank" class="button">Discord Server</a>
-            <a href="#" target="_blank" class="button">YouTube</a>
-            <a href="#" target="_blank" class="button">Instagram</a>
-        </div>
-    </div>
+            <a href="https://discord.gg/RfhzMmKphJ" target="_blank" class="button">
+                Discord Server
+            </a>
+            
+            <a href="https://github.com/L4layerz" target="_blank" class="button">
+                GitHub
+            </a>
 
-    <audio id="bgm" src="여기에_음악주소.mp3" loop></audio>
+            <a href="https://youtube.com/@l4layerz?si=jLeK_ov36ghyhRzN" target="_blank" class="button">
+                YouTube
+            </a>
+        </div>
+
+        <footer style="margin-top: 40px; color: #333; font-size: 10px; letter-spacing: 1px;">
+            © 2026 L4LAYERZ. ALL RIGHTS RESERVED.
+        </footer>
+    </div>
 
     <script>
         function enterSite() {
-            // 오버레이 숨기기
             document.getElementById('overlay').classList.add('hidden');
-            // 콘텐츠 보이기
             document.getElementById('main-content').classList.add('show');
-            // 배경 음악 재생 (선택사항)
-            const audio = document.getElementById('bgm');
-            if(audio.src) audio.play();
-            // 스크롤 허용
             document.body.style.overflow = 'auto';
         }
     </script>
