@@ -56,12 +56,12 @@
         .container.show { opacity: 1; transform: translateY(0); }
 
         .avatar {
-            width: 90px;
-            height: 90px;
+            width: 95px;
+            height: 95px;
             border-radius: 50%;
             margin-bottom: 15px;
-            border: 1px solid rgba(255,255,255,0.1);
-            pointer-events: none;
+            border: 2px solid rgba(255,255,255,0.1);
+            object-fit: cover; /* 이미지가 찌그러지지 않게 */
         }
 
         h1 { font-size: 26px; margin: 0; letter-spacing: -1px; }
@@ -81,7 +81,7 @@
             transition: 0.3s;
         }
         .spotify-widget:hover { border-color: #1DB954; }
-        .album-art { width: 48px; height: 48px; border-radius: 6px; }
+        .album-art { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; }
         .song-info { flex: 1; }
         .song-title { color: #fff; font-size: 14px; font-weight: 700; margin: 0; }
         .artist-name { color: #b3b3b3; font-size: 11px; margin: 0; }
@@ -102,14 +102,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
         }
         .button:hover {
             background: rgba(255, 255, 255, 0.1);
             border-color: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
         }
-        .icon { width: 18px; filter: invert(1); }
     </style>
 </head>
 
@@ -120,31 +118,21 @@
     </div>
 
     <div class="container" id="main-content">
-        <img class="avatar" src="images/avatar.png" alt="Profile">
+        <img class="avatar" src="https://www.dropbox.com/scl/fi/l8txn2sp3493skedebowt/2044.png?rlkey=3cl2vb0149b2l4228egt6r658&st=xfkpw952&raw=1" alt="Profile">
         <h1>L4layerz</h1>
         <p class="bio-text">Korean</p>
 
         <div class="spotify-widget">
-            <img class="album-art" src="https://i.scdn.co/image/ab67616d0000b27376037e296e8d15024b89eb06" alt="Album Art">
+            <img class="album-art" src="https://www.dropbox.com/scl/fi/78lxjov0du1bacqw7gtxb/20759949.jpg?rlkey=4x9wgjwxp85btoomrbran6mb4&st=7t8fg096&raw=1" alt="Album Art">
             <div class="song-info">
-                <p class="song-title">Perfect Night</p>
-                <p class="artist-name">LE SSERAFIM</p>
-            </div>
+                <p class="song-title">Perfect Night</p> <p class="artist-name">LE SSERAFIM</p> </div>
             <img src="https://cdn-icons-png.flaticon.com/512/174/174872.png" class="spot-icon" alt="Spotify">
         </div>
 
         <div class="button-stack">
-            <a href="https://discord.gg/RfhzMmKphJ" target="_blank" class="button">
-                Discord Server
-            </a>
-            
-            <a href="https://github.com/L4layerz" target="_blank" class="button">
-                GitHub
-            </a>
-
-            <a href="https://youtube.com/@l4layerz?si=jLeK_ov36ghyhRzN" target="_blank" class="button">
-                YouTube
-            </a>
+            <a href="https://discord.gg/RfhzMmKphJ" target="_blank" class="button">Discord Server</a>
+            <a href="https://github.com/L4layerz" target="_blank" class="button">GitHub</a>
+            <a href="https://youtube.com/@l4layerz?si=jLeK_ov36ghyhRzN" target="_blank" class="button">YouTube</a>
         </div>
 
         <footer style="margin-top: 40px; color: #333; font-size: 10px; letter-spacing: 1px;">
